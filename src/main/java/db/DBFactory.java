@@ -5,23 +5,23 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
 import org.hsqldb.Server;
+import org.hsqldb.util.SqlFile;
+import org.hsqldb.util.SqlToolError;
+
+import util.TextProperties;
 
 public class DBFactory {
-	private static Server db;
+	private static DBFactory dbFactory;
+	private Server db;
 	private Properties properties;
 
 	private DBFactory() {
-
-	}
-
-	public static Connection getConnection() {
 		if (db == null) {
 			db = new Server();
 
@@ -35,30 +35,42 @@ public class DBFactory {
 			// The actual database will be named 'xdb' and its
 			// settings and data will be stored in files
 			// testdb.properties and testdb.script
-			db.setDatabaseName(0, "xdb");
-			db.setDatabasePath(0, "file:testdb");
+			db.setDatabaseName(0, getDBProperties().getProperty("db.name"));
+			db.setDatabasePath(0, getDBProperties().getProperty("db.path"));
 
 			// Start the database!
 			db.start();
 		}
-		
+	}
+	
+	public static DBFactory getInstance(){
+		if(dbFactory == null){
+			dbFactory = new DBFactory();
+		}
+		return dbFactory;
+	}
+
+	public Connection getConnection() {
 		Connection connection = null;
-		
+
 		try {
 			// Getting a connection to the newly started database
 			Class.forName("org.hsqldb.jdbcDriver");
 			// Default user of the HSQLDB is 'sa'
 			// with an empty password
 			connection = DriverManager.getConnection(
-					"jdbc:hsqldb:hsql://localhost/xdb", "sa", "");
+					"jdbc:hsqldb:hsql://localhost/"
+							+ getDBProperties().getProperty("db.name"),
+							  getDBProperties().getProperty("db.user"), 
+							  getDBProperties().getProperty("db.pass"));
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			System.err.println("Database not available");
+			System.err.println(TextProperties.getInstance().getProperty("err.database.notavailable"));
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			System.err.println("Database not available");
+			System.err.println(TextProperties.getInstance().getProperty("err.database.notavailable"));
 		}
 
 		// Return the connection
@@ -73,11 +85,31 @@ public class DBFactory {
 						new File("conf/db.conf"))));
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
+				System.err.println(TextProperties.getInstance().getProperty("err.dbproperties.notavailable"));
 			} catch (IOException e) {
 				e.printStackTrace();
+				System.err.println(TextProperties.getInstance().getProperty("err.dbproperties.notavailable"));
 			}
 		}
-		
+
 		return properties;
+	}
+	
+	public void resetDB(){
+		SqlFile sql;
+		try {
+			sql = new SqlFile(new File("db/reset.sql"), true, null);
+			sql.execute(getConnection(), true);
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.err.println(TextProperties.getInstance().getProperty("err.database.notavailable"));
+		} catch (SqlToolError e) {
+			e.printStackTrace();
+			System.err.println(TextProperties.getInstance().getProperty("err.database.notavailable"));
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.err.println(TextProperties.getInstance().getProperty("err.database.notavailable"));
+		}
+
 	}
 }
