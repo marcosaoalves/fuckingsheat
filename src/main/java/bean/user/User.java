@@ -4,7 +4,7 @@ import java.util.Set;
 
 public class User {
 	private String name;
-	private String user;
+	private String username;
 	private String email;
 	private String pass;
 	private Set<String> access;
@@ -17,12 +17,12 @@ public class User {
 		this.name = name;
 	}
 
-	public String getUser() {
-		return user;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setUser(String login) {
-		this.user = login;
+	public void setUsername(String login) {
+		this.username = login;
 	}
 
 	public String getEmail() {

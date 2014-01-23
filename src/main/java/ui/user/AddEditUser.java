@@ -1,31 +1,25 @@
 package ui.user;
 
+import java.awt.CardLayout;
 import java.awt.GridLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.Observer;
 
+import javax.swing.AbstractListModel;
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.JList;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
+import javax.swing.ListModel;
 
-import delegate.user.UserCommand;
-
+import ui.MessageObservable;
+import ui.common.JButton;
+import ui.common.JPanel;
 import util.TextProperties;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import javax.swing.JTextArea;
-import javax.swing.JList;
-import javax.swing.AbstractListModel;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.RowSpec;
-import com.jgoodies.forms.factories.FormFactory;
-import java.awt.CardLayout;
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
+import delegate.user.UserCommand;
 
 public class AddEditUser extends JPanel {
 	private JTextField txtTxtname;
@@ -39,7 +33,10 @@ public class AddEditUser extends JPanel {
 	/**
 	 * Create the panel.
 	 */
-	public AddEditUser() {
+	public AddEditUser(Observer observer) {
+		MessageObservable observable = new MessageObservable();
+		observable.addObserver(observer);
+
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
 		JToolBar toolBar = new JToolBar();
@@ -54,7 +51,8 @@ public class AddEditUser extends JPanel {
 				try {
 					command.save(txtTxtname.getText(), txtTxtemail.getText(),
 							txtTxtusername.getText(), pwdTxtpass.getText(),
-							pwdTxtpassagain.getText(), lstTela.getSelectedValuesList());
+							pwdTxtpassagain.getText(),
+							lstTela.getSelectedValuesList());
 
 					// TODO Implementar tratamento de erro e fechar tela.
 
@@ -82,7 +80,6 @@ public class AddEditUser extends JPanel {
 		panel.add(lblLnlname);
 
 		txtTxtname = new JTextField();
-		txtTxtname.setText("txtName");
 		panel.add(txtTxtname);
 		txtTxtname.setColumns(10);
 
@@ -91,7 +88,6 @@ public class AddEditUser extends JPanel {
 		panel.add(lblLblemail);
 
 		txtTxtemail = new JTextField();
-		txtTxtemail.setText("txtEmail");
 		panel.add(txtTxtemail);
 		txtTxtemail.setColumns(10);
 
@@ -100,7 +96,6 @@ public class AddEditUser extends JPanel {
 		panel.add(lblLblusername);
 
 		txtTxtusername = new JTextField();
-		txtTxtusername.setText("txtUsername");
 		panel.add(txtTxtusername);
 		txtTxtusername.setColumns(10);
 
@@ -109,7 +104,6 @@ public class AddEditUser extends JPanel {
 		panel.add(lblLblpassword);
 
 		pwdTxtpass = new JPasswordField();
-		pwdTxtpass.setText("txtPass");
 		panel.add(pwdTxtpass);
 
 		JLabel lblLblpassagain = new JLabel(TextProperties.getInstance()
@@ -117,7 +111,6 @@ public class AddEditUser extends JPanel {
 		panel.add(lblLblpassagain);
 
 		pwdTxtpassagain = new JPasswordField();
-		pwdTxtpassagain.setText("txtPassAgain");
 		panel.add(pwdTxtpassagain);
 
 		JPanel panel_2 = new JPanel();
@@ -141,6 +134,32 @@ public class AddEditUser extends JPanel {
 			}
 		});
 
+	}
+
+	public AddEditUser(Observer observer, String user) {
+		this(observer);
+		if (user != null) {
+			UserCommand command = new UserCommand();
+			String[] ret = command.getUser(user);
+			txtTxtname.setText(ret[2]);
+			txtTxtemail.setText(ret[1]);
+			txtTxtusername.setText(ret[0]);
+
+			String[] ret2 = command.getAccess(user);
+			if (ret2 != null) {
+				ListModel<String> list = lstTela.getModel();
+				int[] indices = new int[ret2.length];
+				int h = 0;
+				for (int i = 0; i < list.getSize(); i++) {
+					for (int j = 0; j < ret2.length; j++) {
+						if (ret2[j].equalsIgnoreCase(list.getElementAt(i))) {
+							indices[h++] = i;
+						}
+					}
+				}
+				lstTela.setSelectedIndices(indices);
+			}
+		}
 	}
 
 	public JButton getBtnBtncancel() {

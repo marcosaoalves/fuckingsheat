@@ -4,26 +4,35 @@ import java.awt.CardLayout;
 import java.awt.EventQueue;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 import javax.swing.UIManager;
 
+import ui.common.JPanel;
 import ui.user.AddEditUser;
 import ui.user.SelectUser;
 import util.TextProperties;
 
-public class Main {
+public class Main implements Observer {
 
 	private JFrame frame;
+	private Main observer;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+			public void uncaughtException(Thread t, Throwable e) {
+				e.printStackTrace();
+			}
+		});
+
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -40,10 +49,11 @@ public class Main {
 	 * Create the application.
 	 */
 	public Main() {
+		observer = this;
 		initialize();
 	}
 
-	public void error(String message){
+	public void error(String message) {
 		ErrorPanel panel = new ErrorPanel(message);
 		panel.getBtnBtnerror().addMouseListener(new MouseAdapter() {
 			@Override
@@ -55,7 +65,7 @@ public class Main {
 		frame.getContentPane().add(panel);
 		frame.getContentPane().revalidate();
 	}
-	
+
 	/**
 	 * Initialize the contents of the frame.
 	 */
@@ -74,34 +84,54 @@ public class Main {
 		JMenuBar menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
 
-		JMenu mnUsuario = new JMenu(TextProperties.getInstance().getProperty("app.menu.user"));
+		JMenu mnUsuario = new JMenu(TextProperties.getInstance().getProperty(
+				"app.menu.user"));
 		menuBar.add(mnUsuario);
 
-		JMenuItem mntmAdicionar = new JMenuItem(TextProperties.getInstance().getProperty("app.menu.user.add"));
+		JMenuItem mntmAdicionar = new JMenuItem(TextProperties.getInstance()
+				.getProperty("app.menu.user.add"));
 		mntmAdicionar.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				AddEditUser panel = new AddEditUser();
-				panel.getBtnBtncancel().addMouseListener(new CancelMouseAdapter(frame));
-				frame.getContentPane().remove(0);
-				frame.getContentPane().add(panel);
-				frame.getContentPane().revalidate();
+				showAddEditUserPanel(null);
 			}
 		});
 		mnUsuario.add(mntmAdicionar);
 
-		JMenuItem mntmConsultar = new JMenuItem(TextProperties.getInstance().getProperty("app.menu.user.select"));
+		JMenuItem mntmConsultar = new JMenuItem(TextProperties.getInstance()
+				.getProperty("app.menu.user.select"));
 		mntmConsultar.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				SelectUser panel = new SelectUser();
-				panel.getBtnBtncancel().addMouseListener(new CancelMouseAdapter(frame));
-				frame.getContentPane().remove(0);
-				frame.getContentPane().add(panel);
-				frame.getContentPane().revalidate();
+				showSelectUserPanel();
 			}
 		});
 		mnUsuario.add(mntmConsultar);
+	}
+
+	private void showAddEditUserPanel(String user) {
+		AddEditUser panel = new AddEditUser(observer, user);
+		panel.getBtnBtncancel().addMouseListener(new CancelMouseAdapter(frame));
+		frame.getContentPane().remove(0);
+		frame.getContentPane().add(panel);
+		frame.getContentPane().revalidate();
+	}
+
+	private void showSelectUserPanel() {
+		SelectUser panel = new SelectUser(observer);
+		panel.getBtnBtncancel().addMouseListener(new CancelMouseAdapter(frame));
+		frame.getContentPane().remove(0);
+		frame.getContentPane().add(panel);
+		frame.getContentPane().revalidate();
+	}
+
+	public void update(Observable arg0, Object arg1) {
+		switch (((MessageObservable) arg0).getAction()) {
+		case MessageObservable.EDIT_USER:
+			showAddEditUserPanel((String)arg1);
+			break;
+		}
+
 	}
 }
 

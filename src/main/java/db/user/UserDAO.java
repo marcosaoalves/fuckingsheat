@@ -30,7 +30,7 @@ public class UserDAO extends CommonDAO{
 				ret = new User();
 				ret.setName(rs.getString("name"));
 				ret.setEmail(rs.getString("email"));
-				ret.setUser(rs.getString("username"));
+				ret.setUsername(rs.getString("username"));
 				ret.setAccess(getAccess(user));
 			}
 		} catch (SQLException e) {
@@ -55,8 +55,8 @@ public class UserDAO extends CommonDAO{
 				User retUser = new User();
 				retUser.setName(rs.getString("name"));
 				retUser.setEmail(rs.getString("email"));
-				retUser.setUser(rs.getString("username"));
-				retUser.setAccess(getAccess(retUser.getUser()));
+				retUser.setUsername(rs.getString("username"));
+				retUser.setAccess(getAccess(retUser.getUsername()));
 				ret.add(retUser);
 			}
 		} catch (SQLException e) {
@@ -91,7 +91,7 @@ public class UserDAO extends CommonDAO{
 		
 		try {
 			PreparedStatement statement = c.prepareStatement(getSql("user.insert"));
-			statement.setString(1, user.getUser());
+			statement.setString(1, user.getUsername());
 			statement.setString(2, user.getPass());
 			statement.setString(3, user.getName());
 			statement.setString(4, user.getEmail());
@@ -111,7 +111,7 @@ public class UserDAO extends CommonDAO{
 		
 		try {
 			PreparedStatement statement = c.prepareStatement(getSql("user.update"));
-			statement.setString(4, user.getUser());
+			statement.setString(4, user.getUsername());
 			statement.setString(1, user.getPass());
 			statement.setString(2, user.getName());
 			statement.setString(3, user.getEmail());
@@ -159,7 +159,7 @@ public class UserDAO extends CommonDAO{
 			if(access != null){
 				Iterator<String> iAccess = access.iterator();
 				while (iAccess.hasNext()){
-					statement.setString(1, user.getUser());
+					statement.setString(1, user.getUsername());
 					statement.setString(2, iAccess.next());
 					
 					statement.executeUpdate();
@@ -178,7 +178,7 @@ public class UserDAO extends CommonDAO{
 		
 		try {
 			PreparedStatement statement = c.prepareStatement(getSql("user_access.delete"));
-			statement.setString(1, user.getUser());
+			statement.setString(1, user.getUsername());
 
 		} catch (SQLException e) {
 			e.printStackTrace();

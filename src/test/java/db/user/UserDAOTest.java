@@ -64,7 +64,7 @@ public class UserDAOTest {
 		User user = new User();
 		user.setName("teste2");
 		user.setPass("teste2");
-		user.setUser("teste2");
+		user.setUsername("teste2");
 		user.setEmail("teste@teste.com");
 		
 		Set<String> access = new HashSet<String>();
@@ -98,7 +98,7 @@ public class UserDAOTest {
 	public void testUpdateUser (){
 		UserDAO dao = new UserDAO();
 		User user = new User();
-		user.setUser("teste");
+		user.setUsername("teste");
 		user.setName("teste3");
 		user.setPass("teste3");
 		user.setEmail("teste3@teste.com");

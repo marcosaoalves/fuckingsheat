@@ -1,5 +1,5 @@
 user.select=select * from usuario where username = ?
-user.select.all=select * from usuario
+user.select.all=select * from usuario order by username
 user.insert=insert into usuario values (?, ?, ?, ?);
 user.update=update usuario set pass=?, name=?, email=? where username=?
 user.validateuserpass=select * from usuario where username = ? and pass = ?
