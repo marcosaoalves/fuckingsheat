@@ -11,16 +11,13 @@ public class TextProperties extends Properties {
 	private static TextProperties text;
 	
 	private TextProperties(){
-			text = new TextProperties();
 			try {
-				text.load(new BufferedInputStream(new FileInputStream(
+				load(new BufferedInputStream(new FileInputStream(
 						new File("conf/text.properties"))));
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
-				System.err.println(TextProperties.getInstance().getProperty("err.textproperties.notavailable"));
 			} catch (IOException e) {
 				e.printStackTrace();
-				System.err.println(TextProperties.getInstance().getProperty("err.textproperties.notavailable"));
 			}
 	}
 	
@@ -31,4 +28,13 @@ public class TextProperties extends Properties {
 		return text;
 	}
 
+	@Override
+	public String getProperty(String key) {
+		String ret = super.getProperty(key);
+		if(ret == null){
+			ret = "Not Found";
+		}
+		return ret;
+	}
+	
 }

@@ -4,8 +4,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import util.TextProperties;
@@ -21,6 +23,7 @@ public class UserDAO extends CommonDAO{
 		try {
 			PreparedStatement statement = c.prepareStatement(getSql("user.select"));
 			statement.setString(1, user);
+			
 			ResultSet rs = statement.executeQuery();
 			
 			if(rs.next()){
@@ -35,6 +38,32 @@ public class UserDAO extends CommonDAO{
 			System.err.println(TextProperties.getInstance().getProperty("err.database.queryerror"));
 		}
 		return ret;
+	}
+	
+	public List<User> getUser(){
+		List<User> ret = null;
+		Connection c = DBFactory.getInstance().getConnection();
+		
+		try {
+			PreparedStatement statement = c.prepareStatement(getSql("user.select.all"));
+			ResultSet rs = statement.executeQuery();
+			
+			while(rs.next()){
+				if(ret==null){
+					ret = new ArrayList<User>();
+				}
+				User retUser = new User();
+				retUser.setName(rs.getString("name"));
+				retUser.setEmail(rs.getString("email"));
+				retUser.setUser(rs.getString("username"));
+				retUser.setAccess(getAccess(retUser.getUser()));
+				ret.add(retUser);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.err.println(TextProperties.getInstance().getProperty("err.database.queryerror"));
+		}
+		return ret;		
 	}
 	
 	public boolean validateUserPass(String user, String pass){
@@ -77,6 +106,27 @@ public class UserDAO extends CommonDAO{
 		}
 	}
 	
+	public void updateUser (User user){
+		Connection c = DBFactory.getInstance().getConnection();
+		
+		try {
+			PreparedStatement statement = c.prepareStatement(getSql("user.update"));
+			statement.setString(4, user.getUser());
+			statement.setString(1, user.getPass());
+			statement.setString(2, user.getName());
+			statement.setString(3, user.getEmail());
+			
+			statement.executeUpdate();
+			deleteAccess(user);
+			insertAccess(user);
+			c.commit();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.err.println(TextProperties.getInstance().getProperty("err.database.queryerror"));
+		}
+	}
+	
 	private Set<String> getAccess(String user){
 		Set<String> ret = null;
 		Connection c = DBFactory.getInstance().getConnection();
@@ -105,7 +155,7 @@ public class UserDAO extends CommonDAO{
 		try {
 			PreparedStatement statement = c.prepareStatement(getSql("user_access.insert"));
 			
-			Set access = user.getAccess();
+			Set<String> access = user.getAccess();
 			if(access != null){
 				Iterator<String> iAccess = access.iterator();
 				while (iAccess.hasNext()){
@@ -115,6 +165,20 @@ public class UserDAO extends CommonDAO{
 					statement.executeUpdate();
 				}
 			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.err.println(TextProperties.getInstance().getProperty("err.database.queryerror"));
+		}
+		
+	}
+	
+	private void deleteAccess(User user){
+		Connection c = DBFactory.getInstance().getConnection();
+		
+		try {
+			PreparedStatement statement = c.prepareStatement(getSql("user_access.delete"));
+			statement.setString(1, user.getUser());
 
 		} catch (SQLException e) {
 			e.printStackTrace();

@@ -98,8 +98,10 @@ public class DBFactory {
 	public void resetDB(){
 		SqlFile sql;
 		try {
+			Connection c = getConnection();
 			sql = new SqlFile(new File("db/reset.sql"), true, null);
-			sql.execute(getConnection(), true);
+			sql.execute(c, true);
+			c.commit();
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.err.println(TextProperties.getInstance().getProperty("err.database.notavailable"));
