@@ -4,6 +4,8 @@ import java.sql.Connection;
 
 import org.junit.Test;
 
+import svc.db.DBFactory;
+
 public class DBFactoryTest {
 	
 	@Test

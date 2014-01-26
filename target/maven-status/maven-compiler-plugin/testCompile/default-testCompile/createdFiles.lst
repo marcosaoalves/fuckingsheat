@@ -1,0 +1,3 @@
+db/product/ProductDAOTest.class
+db/user/UserDAOTest.class
+db/DBFactoryTest.class

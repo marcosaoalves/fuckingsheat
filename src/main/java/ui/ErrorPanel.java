@@ -1,34 +1,69 @@
 package ui;
 
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.Observer;
 
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
+
+import ui.common.JButton;
+import ui.common.JPanel;
+import util.FileProperties;
 import util.TextProperties;
 
 public class ErrorPanel extends JPanel {
-	private JButton btnBtnerror;
-
 	/**
 	 * Create the panel.
 	 */
-	public ErrorPanel(String error) {
+	public ErrorPanel(Observer observer, String error) {
+		super(observer);
 
+		setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+
+		JPanel panel = new JPanel();
+		panel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		add(panel, gbc);
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		
+		javax.swing.JPanel panel_3 = new javax.swing.JPanel();
+		panel.add(panel_3);
+		
+		JLabel lblImage = new JLabel(new ImageIcon(FileProperties.getInstance().getResourceFile("img/error.png").getPath()));
+		panel_3.add(lblImage);
+		lblImage.setPreferredSize(new Dimension(100,100));
+		lblImage.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		javax.swing.JPanel panel_2 = new javax.swing.JPanel();
+		panel.add(panel_2);
+		
 		JLabel lblLblerror = new JLabel(error);
-		add(lblLblerror);
+		panel_2.add(lblLblerror);
+		lblLblerror.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		JPanel panel_1 = new JPanel();
+		panel_1.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		panel.add(panel_1, BorderLayout.SOUTH);
 
-		btnBtnerror = new JButton(TextProperties.getInstance().getProperty(
+		JButton btnBtnerror = new JButton(TextProperties.getInstance().getProperty(
 				"app.error.button"));
-		add(btnBtnerror);
+		panel_1.add(btnBtnerror);
+		
+		btnBtnerror.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				observable.changeData(MessageObservable.BACK_PANEL, null);
+			}
+		});
 
 	}
-
-	public JButton getBtnBtnerror() {
-		return btnBtnerror;
-	}
-
-	public void setBtnBtnerror(JButton btnBtnerror) {
-		this.btnBtnerror = btnBtnerror;
-	}
-
 }

@@ -1,0 +1,9 @@
+<!DOCTYPE Commands PUBLIC "commands" "commands.dtd">
+<xml>
+	<command beanClass="svc.bean.user.User" id="validateUser">
+		<class name="svc.command.user.UserCommand" method="validateUser">
+			<parameter name="username"/>
+			<parameter name="pass"/>
+		</class>
+	</command>
+</xml>

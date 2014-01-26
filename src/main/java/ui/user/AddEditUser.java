@@ -12,14 +12,15 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import javax.swing.JToolBar;
 import javax.swing.ListModel;
+import javax.swing.border.EmptyBorder;
 
+import svc.command.user.UserCommand;
 import ui.MessageObservable;
 import ui.common.JButton;
 import ui.common.JPanel;
+import ui.common.JToolBar;
 import util.TextProperties;
-import delegate.user.UserCommand;
 
 public class AddEditUser extends JPanel {
 	private JTextField txtTxtname;
@@ -28,18 +29,19 @@ public class AddEditUser extends JPanel {
 	private JPasswordField pwdTxtpass;
 	private JPasswordField pwdTxtpassagain;
 	private JList lstTela;
-	private JButton btnBtncancel;
 
 	/**
 	 * Create the panel.
+	 * 
+	 * @wbp.parser.constructor
 	 */
 	public AddEditUser(Observer observer) {
-		MessageObservable observable = new MessageObservable();
-		observable.addObserver(observer);
+		super(observer);
 
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
 		JToolBar toolBar = new JToolBar();
+
 		add(toolBar);
 
 		JButton btnBtnsave = new JButton(TextProperties.getInstance()
@@ -54,20 +56,33 @@ public class AddEditUser extends JPanel {
 							pwdTxtpassagain.getText(),
 							lstTela.getSelectedValuesList());
 
-					// TODO Implementar tratamento de erro e fechar tela.
+					observable.setBackPanel(null);
+					observable.changeData(
+							MessageObservable.MESSAGE,
+							TextProperties.getInstance().getProperty(
+									"user.addedit.okmessage"));
 
 				} catch (Exception e1) {
-					e1.printStackTrace();
+					observable.changeData(MessageObservable.ERROR,
+							e1.getMessage());
+
 				}
 			}
 		});
 		toolBar.add(btnBtnsave);
 
-		btnBtncancel = new JButton(TextProperties.getInstance().getProperty(
-				"app.btn.cancel"));
+		JButton btnBtncancel = new JButton(TextProperties.getInstance()
+				.getProperty("app.btn.cancel"));
+		btnBtncancel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				observable.changeData(MessageObservable.BACK_PANEL, null);
+			}
+		});
 		toolBar.add(btnBtncancel);
 
 		JPanel panel_1 = new JPanel();
+		panel_1.setBorder(new EmptyBorder(10, 10, 10, 10));
 		add(panel_1);
 		panel_1.setLayout(new BoxLayout(panel_1, BoxLayout.Y_AXIS));
 
@@ -122,8 +137,7 @@ public class AddEditUser extends JPanel {
 		lstTela.setModel(new AbstractListModel() {
 			String[] values = new String[] {
 					TextProperties.getInstance().getProperty("app.menu.user"),
-					TextProperties.getInstance()
-							.getProperty("app.menu.produto") };
+					TextProperties.getInstance().getProperty("app.menu.product") };
 
 			public int getSize() {
 				return values.length;
@@ -161,13 +175,4 @@ public class AddEditUser extends JPanel {
 			}
 		}
 	}
-
-	public JButton getBtnBtncancel() {
-		return btnBtncancel;
-	}
-
-	public void setBtnBtncancel(JButton btnBtncancel) {
-		this.btnBtncancel = btnBtncancel;
-	}
-
 }
