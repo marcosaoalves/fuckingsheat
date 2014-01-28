@@ -88,7 +88,7 @@ public class AddEditUser extends JPanel {
 
 		JPanel panel = new JPanel();
 		panel_1.add(panel);
-		panel.setLayout(new GridLayout(5, 2, 0, 0));
+		panel.setLayout(new GridLayout(0, 2, 0, 0));
 
 		JLabel lblLnlname = new JLabel(TextProperties.getInstance()
 				.getProperty("user.addedit.name"));
@@ -130,10 +130,10 @@ public class AddEditUser extends JPanel {
 
 		JPanel panel_2 = new JPanel();
 		panel_1.add(panel_2);
-		panel_2.setLayout(new CardLayout(0, 10));
+		panel_2.setLayout(new CardLayout(10, 10));
 
 		lstTela = new JList();
-		panel_2.add(lstTela);
+		panel_2.add(lstTela, "name_948415222739");
 		lstTela.setModel(new AbstractListModel() {
 			String[] values = new String[] {
 					TextProperties.getInstance().getProperty("app.menu.user"),
