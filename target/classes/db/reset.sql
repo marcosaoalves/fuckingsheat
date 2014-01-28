@@ -18,9 +18,6 @@ CREATE TABLE usuario_access
 	(username VARCHAR (40),
 	 access VARCHAR (40));
 
-ALTER TABLE usuario_access
-     ADD PRIMARY KEY (username, access);
-
 INSERT INTO usuario_access (username, access) 
 	   VALUES ('admin', 'Usuário');
 

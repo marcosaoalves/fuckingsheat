@@ -6,9 +6,11 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.Observer;
 
@@ -19,6 +21,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import svc.command.user.UserCommand;
@@ -27,13 +30,6 @@ import ui.common.JButton;
 import ui.common.JPanel;
 import util.FileProperties;
 import util.TextProperties;
-import javax.swing.SwingConstants;
-
-
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 public class Login extends JPanel {
 	private JTextField textField;
@@ -134,6 +130,7 @@ public class Login extends JPanel {
 		panel_4.add(panel_5);
 		
 		JButton btnLogin = new JButton(TextProperties.getInstance().getProperty("login.btnlogin"));
+		btnLogin.setPreferredSize(new Dimension(80, 25));
 		btnLogin.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -145,7 +142,6 @@ public class Login extends JPanel {
 				}
 			}
 		});
-		btnLogin.setMargin(new Insets(10, 10, 10, 10));
 		btnLogin.setBorder(new EmptyBorder(0, 0, 0, 0));
 		panel_5.add(btnLogin);
 		

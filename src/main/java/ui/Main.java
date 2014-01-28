@@ -18,6 +18,8 @@ import javax.swing.UIManager;
 import svc.command.user.UserCommand;
 import ui.common.JPanel;
 import ui.login.Login;
+import ui.product.AddEditProduct;
+import ui.product.SelectProduct;
 import ui.user.AddEditUser;
 import ui.user.SelectUser;
 import util.TextProperties;
@@ -119,6 +121,9 @@ public class Main implements Observer {
 		case MessageObservable.EDIT_USER:
 			initAddEditUserPanel((String) arg1);
 			break;
+		case MessageObservable.EDIT_PRODUCT:
+			initAddEditProductPanel((String) arg1);
+			break;
 		case MessageObservable.BACK_PANEL:
 			if(backPanel != null){
 				changePanel(backPanel);
@@ -142,9 +147,6 @@ public class Main implements Observer {
 			JMenu mnUsuario = new JMenu(TextProperties.getInstance().getProperty(
 					"app.menu.user"));
 			menuBar.add(mnUsuario);
-			JMenu mnProduct = new JMenu(TextProperties.getInstance().getProperty(
-					"app.menu.product"));
-			menuBar.add(mnProduct);
 		
 			JMenuItem mntmAdicionar = new JMenuItem(TextProperties.getInstance()
 					.getProperty("app.menu.user.add"));
@@ -165,13 +167,19 @@ public class Main implements Observer {
 				}
 			});
 			mnUsuario.add(mntmConsultar);
+		}
 
+		if (listAccess.contains(TextProperties.getInstance().getProperty("app.menu.product"))){
+			JMenu mnProduct = new JMenu(TextProperties.getInstance().getProperty(
+					"app.menu.product"));
+			menuBar.add(mnProduct);
+		
 			JMenuItem mnAddProduct = new JMenuItem(TextProperties.getInstance()
 					.getProperty("app.menu.product.add"));
 			mnAddProduct.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mousePressed(MouseEvent e) {
-					initAddEditUserPanel(null);
+					initAddEditProductPanel(null);
 				}
 			});
 			mnProduct.add(mnAddProduct);
@@ -181,13 +189,22 @@ public class Main implements Observer {
 			mnConsProduct.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mousePressed(MouseEvent e) {
-					initAddEditUserPanel(null);
+					initConsProductPanel();
 				}
 			});
 			mnProduct.add(mnConsProduct);
 
 		}
+
 		
 		return menuBar;
+	}
+
+	private void initAddEditProductPanel(String product) {
+		changePanel(new AddEditProduct(observer, product));
+	}
+
+	private void initConsProductPanel() {
+		changePanel(new SelectProduct(observer));
 	}
 }

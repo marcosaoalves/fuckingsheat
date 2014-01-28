@@ -185,7 +185,8 @@ public class UserDAO extends CommonDAO{
 		try {
 			PreparedStatement statement = c.prepareStatement(getSql("user_access.delete"));
 			statement.setString(1, user.getUsername());
-
+			
+			c.commit();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.err.println(TextProperties.getInstance().getProperty("err.database.queryerror"));

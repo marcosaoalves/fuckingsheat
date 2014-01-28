@@ -17,7 +17,7 @@ public class Product {
 	private double rateDelivery;
 	private boolean consumable;
 	private boolean quantityInformed;
-	private boolean parcelQuantityCard;
+	private int parcelQuantityCard;
 	private File imageProduct;
 
 	public int getCdProduct() {
@@ -124,11 +124,11 @@ public class Product {
 		this.quantityInformed = quantityInformed;
 	}
 
-	public boolean isParcelQuantityCard() {
+	public int getParcelQuantityCard() {
 		return parcelQuantityCard;
 	}
 
-	public void setParcelQuantityCard(boolean parcelQuantityCard) {
+	public void setParcelQuantityCard(int parcelQuantityCard) {
 		this.parcelQuantityCard = parcelQuantityCard;
 	}
 

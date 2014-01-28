@@ -4,11 +4,12 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 import java.util.Date;
+import java.util.List;
 
 import org.junit.Test;
 
 import svc.bean.product.Product;
-import svc.command.product.ProductDAO;
+import svc.db.product.ProductDAO;
 
 public class ProductDAOTest {
 
@@ -30,7 +31,7 @@ public class ProductDAOTest {
 			product.setRateDelivery(1.0);
 			product.setConsumable(true);
 			product.setQuantityInformed(true);
-			product.setParcelQuantityCard(true);
+			product.setParcelQuantityCard(1);
 			product.setImageProduct(new File("teste.img"));
 
 			dao.insertProduct(product);
@@ -55,7 +56,6 @@ public class ProductDAOTest {
 			ProductDAO dao = new ProductDAO();
 
 			Product product = dao.getProduct(1);
-
 			product.setDsProduct("dsProduct_2");
 			product.setCdproductInternal("cdproductInternal_2");
 			product.setDsMobile("dsMobile_2");
@@ -68,12 +68,58 @@ public class ProductDAOTest {
 			product.setRateDelivery(2.0);
 			product.setConsumable(false);
 			product.setQuantityInformed(false);
-			product.setParcelQuantityCard(false);
+			product.setParcelQuantityCard(1);
 			product.setImageProduct(new File("teste.img"));
 
 			dao.updateProduct(product);
 		} catch (Exception e) {
 			fail("Update não funcionou");
+		}
+	}
+
+	@Test
+	public void testSearch() {
+		ProductDAO dao = new ProductDAO();
+		List<Product> product = dao.search("cdproductInternal_2", null);
+
+		if (product == null ||
+				product.size()==0) {
+			fail("Produto não encontrado");
+		}
+		
+		product = dao.search(null, "dsProduct_2");
+
+		if (product == null ||
+				product.size()==0) {
+			fail("Produto não encontrado");
+		}
+
+		product = dao.search("cdproduct", null);
+
+		if (product == null ||
+				product.size()==0) {
+			fail("Produto não encontrado");
+		}
+
+		product = dao.search(null, "dsProd");
+
+		if (product == null ||
+				product.size()==0) {
+			fail("Produto não encontrado");
+		}
+		
+		product = dao.search("cdproduct", "dsProd");
+
+		if (product == null ||
+				product.size()==0) {
+			fail("Produto não encontrado");
+		}
+		
+		product = dao.search("cdproduct1", "dsProd1");
+
+		if (product != null &&
+				product.size()>0) {
+			fail("Retorno inesperado");
 		}
 	}
 }

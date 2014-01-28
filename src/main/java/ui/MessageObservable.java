@@ -10,6 +10,7 @@ public class MessageObservable extends Observable {
 	public static final int LOGIN = 2;
 	public static final int BACK_PANEL = 3;
 	public static final int MESSAGE = 4;
+	public static final int EDIT_PRODUCT = 5;
 
 	private int action;
 	private JPanel backPanel;
